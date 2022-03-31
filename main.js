@@ -1,12 +1,12 @@
 const readline = require("readline");
 const sdk = require("matrix-js-sdk");
-const { accessToken, alendiaRoomId } = require("./info.json");
-const { setRoomList, printRoomList } = require("./src/util");
+const { accessToken, alendiaRoomId, userId } = require("./info.json");
+const { setRoomList, printRoomList, printHelp, printRoomInfo, printMessages } = require("./src/util");
 
 const client = sdk.createClient({
   baseUrl: "https://mx.alendia.dev",
   accessToken: accessToken,
-  userId: "@alendia:mx.alendia.dev",
+  userId: userId,
 });
 
 const rl = readline.createInterface({
@@ -17,11 +17,53 @@ const rl = readline.createInterface({
 const username = process.env.USERNAME;
 
 let roomList;
+let viewingRoom;
 
-rl.setPrompt(`${username}> `);
-rl.on("line", (line) => {});
+rl.setPrompt(`${username} > `);
+rl.on("line", (line) => {
+  if (line.trim().length === 0) {
+    rl.prompt();
+    return;
+  }
 
-client.startClient();
+  if (line === "/help") {
+    printHelp();
+    rl.prompt();
+    return;
+  }
+
+  // current room you check
+  if (viewingRoom) {
+    if (line === "/exit") {
+      viewingRoom = null;
+      printRoomList(roomList)
+    } else if (line === "/roominfo") {
+      // only same server room info can be read
+      printRoomInfo(viewingRoom);
+    }
+  } else {
+    const [command, arg] = line.split(" ");
+    if (command === "/join") {
+      viewingRoom = roomList[arg];
+      if (viewingRoom.getMember(userId).membership === "invite") {
+        client
+          .joinRoom(viewingRoom.roomId)
+          .then((room) => {
+            roomList = setRoomList(client);
+            viewingRoom = room;
+            printMessages(viewingRoom, roomList, userId);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        printMessages(viewingRoom, roomList);
+      }
+    }
+  }
+
+  rl.prompt();
+});
 
 client.on("sync", (state, prevState, res) => {
   if (state === "PREPARED") {
@@ -30,8 +72,11 @@ client.on("sync", (state, prevState, res) => {
   }
 });
 
-client.on("event", (event) => {
-  // console.log(event.getType());
+client.on("Room", () => {
+  roomList = setRoomList(client);
+  // if (!viewingRoom) {
+  //   printRoomList();
+  // }
 });
 
 client.on("Room.timeline", (event, room, token) => {
@@ -52,3 +97,5 @@ rooms.forEach((room) => {
     // console.log(JSON.stringify(t.event.content));
   });
 });
+
+client.startClient();
