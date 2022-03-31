@@ -78,6 +78,22 @@ const printRoomInfo = (room) => {
   }
 };
 
+const printMemberList = (viewingRoom, userId) => {
+  const members = viewingRoom.currentState.getMembers();
+  members.sort((a, b) => {
+    if (a.name > b.name) return -1;
+    if (a.name < b.name) return 1;
+    return 0;
+  });
+  console.log(`Membership list for room ${viewingRoom.name}`);
+  console.log(Array(viewingRoom.name.length + 28).join("-"));
+  members.map((member) => {
+    if (!member.membership) return;
+    const membershipWithPad = member.membership + Array(10 - member.membership.length).join(" ");
+    console.log(`${membershipWithPad} :: ${member.name}  (${member.userId === userId ? "Me" : member.userId})`);
+  });
+};
+
 const printMessages = (viewingRoom, roomList, userId) => {
   if (!viewingRoom) {
     printRoomList(roomList);
@@ -131,4 +147,5 @@ exports.setRoomList = setRoomList;
 exports.printRoomList = printRoomList;
 exports.printHelp = printHelp;
 exports.printRoomInfo = printRoomInfo;
+exports.printMemberList = printMemberList;
 exports.printMessages = printMessages;

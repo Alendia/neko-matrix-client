@@ -1,7 +1,7 @@
 const readline = require("readline");
 const sdk = require("matrix-js-sdk");
 const { accessToken, alendiaRoomId, userId } = require("./info.json");
-const { setRoomList, printRoomList, printHelp, printRoomInfo, printMessages } = require("./src/util");
+const { setRoomList, printRoomList, printHelp, printRoomInfo, printMemberList, printMessages } = require("./src/util");
 
 const client = sdk.createClient({
   baseUrl: "https://mx.alendia.dev",
@@ -36,10 +36,12 @@ rl.on("line", (line) => {
   if (viewingRoom) {
     if (line === "/exit") {
       viewingRoom = null;
-      printRoomList(roomList)
+      printRoomList(roomList);
     } else if (line === "/roominfo") {
       // only same server room info can be read
       printRoomInfo(viewingRoom);
+    } else if (line === "/members") {
+      printMemberList(viewingRoom, userId);
     }
   } else {
     const [command, arg] = line.split(" ");
