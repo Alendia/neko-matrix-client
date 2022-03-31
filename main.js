@@ -33,6 +33,7 @@ rl.on("line", (line) => {
   }
 
   // current room you check
+  const [command, arg] = line.split(" ");
   if (viewingRoom) {
     if (line === "/exit") {
       viewingRoom = null;
@@ -42,9 +43,19 @@ rl.on("line", (line) => {
       printRoomInfo(viewingRoom);
     } else if (line === "/members") {
       printMemberList(viewingRoom, userId);
+    } else if (command === "/more") {
+      const amount = parseInt(arg) || 20;
+      client.scrollback(viewingRoom, amount).then(
+        (room) => {
+          printMessages(room, roomList, userId);
+          rl.prompt();
+        },
+        (e) => {
+          console.log(e);
+        }
+      );
     }
   } else {
-    const [command, arg] = line.split(" ");
     if (command === "/join") {
       viewingRoom = roomList[arg];
       if (viewingRoom.getMember(userId).membership === "invite") {
