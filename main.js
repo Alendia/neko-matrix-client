@@ -54,6 +54,18 @@ rl.on("line", (line) => {
           console.log(e);
         }
       );
+    } else if (command === "/invite") {
+      const inviteUserId = arg.trim();
+      client.invite(viewingRoom.roomId, inviteUserId).then(
+        () => {
+          printMessages(viewingRoom, roomList, userId);
+          rl.prompt();
+        },
+        (e) => {
+          console.log(e);
+        }
+      );
+      console.log("Alendia's Reminder: Reinvite someone will remove him/her")
     }
   } else {
     if (command === "/join") {
