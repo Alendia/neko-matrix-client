@@ -1,3 +1,4 @@
 /node_modules
 
 /info.json
+/sessionStore.json
