@@ -73,3 +73,7 @@ Scrollback more events
 🚫 **Cross Server Room Info cannot be displayed**
 
 Display room info e.g. name, topic.
+
+## License
+
+[MIT licensed](https://opensource.org/licenses/MIT)
