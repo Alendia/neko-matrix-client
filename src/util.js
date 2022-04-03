@@ -143,9 +143,4 @@ const printLine = (event, userId) => {
   console.log(`[${time}] ${name} ${separator} ${body}`);
 };
 
-exports.setRoomList = setRoomList;
-exports.printRoomList = printRoomList;
-exports.printHelp = printHelp;
-exports.printRoomInfo = printRoomInfo;
-exports.printMemberList = printMemberList;
-exports.printMessages = printMessages;
+module.exports = { setRoomList, printRoomList, printHelp, printRoomInfo, printMemberList, printMessages, printLine };

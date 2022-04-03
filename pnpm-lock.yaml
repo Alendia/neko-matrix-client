@@ -1,12 +1,16 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@matrix-org/olm': ^3.2.8
   matrix-js-sdk: ^16.0.0
   mime-types: ^2.1.35
   nodemon: ^2.0.15
 
 dependencies:
   mime-types: 2.1.35
+
+optionalDependencies:
+  '@matrix-org/olm': 3.2.8
 
 devDependencies:
   matrix-js-sdk: 16.0.0
@@ -20,6 +24,12 @@ packages:
     dependencies:
       regenerator-runtime: 0.13.9
     dev: true
+
+  /@matrix-org/olm/3.2.8:
+    resolution: {integrity: sha1-jVNjbQReF3biouxmE+VzMN2c6FY=, tarball: https://gitlab.matrix.org/api/v4/projects/27/packages/npm/@matrix-org/olm/-/@matrix-org/olm-3.2.8.tgz}
+    requiresBuild: true
+    dev: false
+    optional: true
 
   /@sindresorhus/is/0.14.0:
     resolution: {integrity: sha512-9NET910DNaIPngYnLLPeg+Ogzqsi9uM4mSboU5y6p8S5DzMTVEsJZrawi+BoDNUVBa2DhJqQYUFvMDfgU062LQ==}

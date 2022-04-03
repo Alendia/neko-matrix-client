@@ -15,5 +15,8 @@
 	},
 	"author": "Alendia",
 	"license": "ISC",
-	"description": ""
+	"description": "",
+	"optionalDependencies": {
+		"@matrix-org/olm": "^3.2.8"
+	}
 }

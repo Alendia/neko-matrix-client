@@ -1,13 +1,26 @@
+global.Olm = require("@matrix-org/olm");
+
 const readline = require("readline");
+const { createReadStream } = require("fs");
+const path = require("path");
+const homedir = require("os").homedir();
 const sdk = require("matrix-js-sdk");
-const { accessToken, alendiaRoomId, userId } = require("./info.json");
+const { accessToken, userId, deviceId } = require("./info.json");
 const { setRoomList, printRoomList, printHelp, printRoomInfo, printMemberList, printMessages } = require("./src/util");
+const { Storage, readContent } = require("./src/storage");
+
+const storage = readContent();
 
 const client = sdk.createClient({
   baseUrl: "https://mx.alendia.dev",
   accessToken: accessToken,
   userId: userId,
+  sessionStore: new sdk.WebStorageSessionStore(storage),
+  cryptoStore: new sdk.MemoryCryptoStore(),
+  deviceId: deviceId,
 });
+
+client.initCrypto();
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -65,7 +78,19 @@ rl.on("line", (line) => {
           console.log(e);
         }
       );
-      console.log("Alendia's Reminder: Reinvite someone will remove him/her")
+      console.log("Alendia's Reminder: Reinvite someone will remove him/her");
+    } else if (command === "/file") {
+      // upload local file to room
+      const fileName = path.join(homedir, arg.trim());
+      const stream = createReadStream(fileName);
+      client.uploadContent({ stream: stream, name: fileName }).then((url) => {
+        const content = {
+          msgType: "m.file",
+          body: fileName,
+          url: JSON.parse(url).content_uri,
+        };
+        client.sendMessage(viewingRoom.roomId, content);
+      });
     }
   } else {
     if (command === "/join") {

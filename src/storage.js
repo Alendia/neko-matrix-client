@@ -2,14 +2,13 @@ const { existsSync, readFileSync } = require("fs");
 const { writeFile } = require("fs/promises");
 const path = require("path");
 
-const storePath = path.join(__dirname, "../sessionStore.json");
-let content;
+const storePath = path.join(__dirname, "./sessionStore.json");
 
 const readContent = () => {
   if (existsSync(storePath) && Array.from(readFileSync(storePath)).length !== 0) {
-    content = new Storage(new Map(Object.entries(JSON.parse(readFileSync(storePath)))));
+    return new Storage(new Map(Object.entries(JSON.parse(readFileSync(storePath)))));
   } else {
-    content = new Storage();
+    return new Storage();
   }
 };
 
@@ -46,8 +45,7 @@ Storage.prototype.clear = function clear() {
 
 readContent();
 
-module.exports = Storage;
-
+module.exports = { Storage, readContent };
 /* const a = new Storage();
 console.log(a);
 console.log(a.setItem("1", 233));
